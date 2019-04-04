@@ -2,8 +2,76 @@
 
 # Move desktop-environment from main computer onto fresh installed distro
 
-echo "=================================================="
-echo "==========  Desktop Environment Mover  ==========="
-echo "=================================================="
-echo
-echo "List of packages to be installed can be found under ${0}/packages"
+# VARIABLES
+PACKAGES="/packages"
+CONFIGS="/configs/"
+LINKS="/links"
+
+# functions:
+usage() {
+    echo "Script to move a given desktop-configuration to a newly installed distro." >&2
+    echo >&2
+    echo "Usage: ${0} [Arguments]       install desktopenvironment" >&2
+    echo "With no arguments given: Read packages from $(dirname '${0}')/packages, configs from $(dirname '${0}')/configs/ and links from $(dirname '${0}')/links." >&2
+    echo >&2
+    echo "Arguments:" >&2
+    echo "      -p FILE     Specify a file that contains the packages that are to be installed." >&2
+    echo "      -c FOLDER   Specify a folder to look for config files." >&2
+    echo "      -l FILE     Specify a file that contains links to packages from AUR/GIT." >&2
+    echo "      -v          Increase verbosity." >&2
+}
+
+title () {
+    echo "=================================================="
+    echo "==========  Desktop Environment Mover  ==========="
+    echo "=================================================="
+    echo
+}
+
+vlog() {
+    local MESSAGE="${@}"
+    if [[ "${VERBOSE}" = 'true' ]]; then
+        echo "${MESSAGE}"
+    fi
+}
+
+# user needs rot access to run; exitcode 1 = no root
+if [[ ${UID} -ne 0 ]]; then
+    echo "You need root privileges to run this script!"
+    exit 1
+fi
+
+title
+
+# parse options
+while getopts vp:c:l OPTION; do
+    case ${OPTION} in
+        v)
+            VERBOSE='true'
+            vlog 'Verbose mode on.'
+            ;;
+        p)
+            PACKAGES=${OPTARG} 
+            vlog "packages set to ${PACKAGES}"
+            ;;
+        c)
+            CONFIGS=${OPTARG} 
+            vlog "configs set to ${CONFIGS}"
+            ;;
+        l)
+            LINKS=${OPTARG} 
+            vlog "links set to ${LINKS}"
+            ;;
+    esac
+done
+
+# Remove the options, if too many options EXITCODE 2 = to many options
+shift "$(( OPTIND - 1 ))"
+if [[ "${#}" -gt 0 ]]; then
+    vlog "${@} is no valid option."
+    usage
+    exit 2
+fi
+
+# Get packagemanager
+
