@@ -1,0 +1,318 @@
+; -------------------- ;
+; 	Variables      ;
+; -------------------- ;
+[colors]
+background      = #dF000000
+background-alt  = #000
+
+foreground      = #ccffffff
+foreground-alt  = #b2b2b2b2
+
+green           = #aaff77
+gray            = #444444
+white           = #ff5555
+
+trans 		= #DA292b2e
+pink 		= #d75f87
+blue 		= #4f97d7
+purple 		= #875faf
+red 		= #ee3333
+
+; -------------------- ;
+; 	Bars	       ;
+; -------------------- ;
+
+[bar/top-right]
+monitor 	= DVI-I-1
+width 		= 100%
+height 		= 18
+enable-ipc 	= true
+
+background 	= ${colors.background}
+foreground 	= ${colors.foreground}
+
+modules-right 	= arrow_lb1 time arrow_ls date arrow_lb2 
+modules-center 	= i3
+modules-left 	= arrow_rb2 volume arrow_rb1 arrow_rb2 power arrow_rb1
+
+;font-0 = System San Francisco Display:style=Bold:size=10;2
+font-0 = SFNS Display:style=Bold:size=10;2
+font-1 = Hack:pixelsize=15;4
+font-2 = Font Awesome 5 Free:style=Regular:pixelsize=12;3
+font-3 = Font Awesome 5 Free:style=Solid:pixelsize=12;3
+font-4 = Font Awesome 5 Brands:pixelsize=12;3            
+font-5 = Hack:pixelsize=16;4
+font-6 = Material Icons:style=Regular:size=10;0
+font-7 = Material Icons:style=Regular:size=17;5
+font-8 = Material Icons:style=Regular:size=15;5
+font-9 = Material Icons:pixelsize=13;4
+
+[bar/top-left]
+monitor 	= DVI-D-0
+width 		= 100%
+height 		= 18 
+
+background 	= ${colors.background}
+foreground 	= ${colors.foreground}
+
+modules-right 	= arrow_lb1 time arrow_lb2
+modules-center 	= i3
+modules-left 	= arrow_rb2 cpu arrow_rb1 arrow_rb2 memory arrow_rb1 arrow_rb2 temp arrow_rb1
+
+font-0 = SFNS Display:style=Bold:size=10;2
+font-1 = Hack:pixelsize=15;4
+font-2 = Font Awesome 5 Free:style=Regular:pixelsize=12;3
+font-3 = Font Awesome 5 Free:style=Solid:pixelsize=12;3
+font-4 = Font Awesome 5 Brands:pixelsize=12;3            
+font-5 = Hack:pixelsize=16;4
+font-6 = Material Icons:style=Regular:size=10;0
+font-7 = Material Icons:style=Regular:size=17;5
+font-8 = Material Icons:style=Regular:size=15;5
+
+; --------------------- ;
+; 	Design		;
+; --------------------- ;
+; 	Left-Arrows	;
+; ---------------------	;
+
+[module/arrow_ls]
+type = custom/text
+content			= 
+content-font 		= 6
+content-foreground 	= ${colors.background-alt}
+content-background 	= ${colors.green}
+
+[module/arrow_lb1]
+type = custom/text
+content 		= 
+content-font 		= 2
+content-foreground 	= ${colors.green}
+content-background 	= ${colors.background-alt}
+
+[module/arrow_lb2]
+type = custom/text
+content 		= 
+content-font 		= 2
+content-foreground 	= ${colors.background-alt}
+content-background 	= ${colors.green}
+
+; --------------------- ;
+; 	Right-Arrows	;
+; ---------------------	;
+
+[module/arrow_rs]
+type = custom/text
+content 		= 
+content-font		= 6
+content-foreground 	= ${colors.background-alt}
+content-background 	= ${colors.green}
+
+[module/arrow_rb1]
+type = custom/text
+content            	= 
+content-font 		= 2
+content-foreground 	= ${colors.green}
+content-background 	= ${colors.background-alt}
+
+[module/arrow_rb2]
+type = custom/text
+content 		= 
+content-font 		= 2
+content-foreground 	= ${colors.background-alt}
+content-background 	= ${colors.green}
+
+; -------------------- ;
+; 	Modules        ;
+; -------------------- ;
+[module/date]
+type 	 		= internal/date
+interval 		= 1
+
+date 			= %d.%m.%Y
+label 			= "%date%"
+label-font 		= 0
+label-foreground 	= ${colors.background}
+label-background 	= ${colors.green}
+label-padding-right 	= 1
+
+[module/time]
+type 			= internal/date
+interval 		= 1
+
+time 			= %H:%M:%S
+label 			= "%time%"
+label-font 		= 0
+label-foreground 	= ${colors.background}
+label-background 	= ${colors.green}
+label-padding 		= 1
+
+[module/volume]
+type 			= internal/pulseaudio
+interval 		= 2
+module-padding 		= 1
+
+label-muted 		= 
+label-muted-font 	= 8
+label-muted-foreground 	= ${colors.background}
+label-muted-background 	= ${colors.green}
+
+format-volume 		= <ramp-volume>
+ramp-volume-0 		= %{T8}%{T-}
+ramp-volume-1 		= %{T8}%{T-}
+ramp-volume-2 		= %{T8}%{T-}
+
+format-volume-foreground = ${colors.background}
+format-volume-background = ${colors.green}
+
+[module/cpu]
+type 			= internal/cpu
+interval 		= 0.5
+
+format 			= <label> <ramp-coreload>
+format-foreground 	= ${colors.background}
+format-background 	= ${colors.green}
+format-padding 		= 2
+
+label 			= 
+label-font 		= 9
+ramp-coreload-0 	= ▁
+ramp-coreload-1 	= ▂
+ramp-coreload-2 	= ▃
+ramp-coreload-3 	= ▄
+ramp-coreload-4 	= ▅
+ramp-coreload-5 	= ▆
+ramp-coreload-6 	= ▇
+ramp-coreload-7 	= █
+
+[module/memory]
+type 			= internal/memory
+interval 		= 1 
+
+format 			= <label> <ramp-used>
+format-foreground 	= ${colors.background}
+format-background 	= ${colors.green}
+format-padding 		= 2
+
+label 			= 
+label-font 		= 9
+ramp-used-0 		= ▁
+ramp-used-1 		= ▂
+ramp-used-2 		= ▃
+ramp-used-3 		= ▄
+ramp-used-4 		= ▅
+ramp-used-5 		= ▆
+ramp-used-6 		= ▇
+ramp-used-7 		= █
+
+[module/power]
+type 			= custom/menu
+expand-right 		= true
+
+label-open 		= 
+label-open-font 	= 8
+label-open-foreground 	= ${colors.background}
+label-open-background 	= ${colors.green}
+label-close 		= 
+label-close-font 	= 8
+label-close-background 	= ${colors.green}
+label-close-foreground 	= ${colors.background}
+
+menu-0-0 		= 
+menu-0-0-font 		= 10
+menu-0-0-foreground 	= ${colors.background}
+menu-0-0-background 	= ${colors.green}
+menu-0-0-exec 		= "env XDG_CURRENT_DESKTOP=GNOME gnome-control-center"
+
+menu-0-1 		= 
+menu-0-1-font 		= 10
+menu-0-1-foreground 	= ${colors.background}
+menu-0-1-background 	= ${colors.green}
+menu-0-1-exec 		= "shutdown -c"
+
+menu-0-2 		= 
+menu-0-2-font 		= 10
+menu-0-2-foreground 	= ${colors.background}
+menu-0-2-background 	= ${colors.green}
+menu-0-2-exec 		= "reboot"
+
+menu-0-3		= 
+menu-0-3-font		= 3
+menu-0-3-foreground 	= ${colors.background}
+menu-0-3-background 	= ${colors.green}
+menu-0-3-exec 		= pkexec --user root /home/lenny/bin/reboot-windows
+
+menu-0-4 		= 
+menu-0-4-font 		= 10
+menu-0-4-foreground 	= ${colors.background}
+menu-0-4-background 	= ${colors.green}
+menu-0-4-exec 		= "shutdown 1"
+
+[module/temp]
+type 			= internal/temperature
+interval 		= 0.5
+
+thermal-zone 		= 0
+warn-temperature 	= 60
+
+format 			= <label><ramp>
+format-warn 		= <label-warn><ramp>
+
+label 			= 
+label-font 		= 3
+label-padding 		= 1
+label-foreground 	= ${colors.background}
+label-background 	= ${colors.green}
+
+label-warn		= 
+label-warn-font 	= 3
+label-warn-padding 	= 1
+label-warn-foreground 	= ${colors.background}
+label-warn-background 	= ${colors.red}
+
+ramp-0 			= ▁
+ramp-1 			= ▂
+ramp-2 			= ▃
+ramp-3 			= ▄
+ramp-4 			= ▅
+ramp-5 			= ▆
+ramp-6 			= ▇
+ramp-7 			= █
+
+ramp-padding 		= 1
+#ramp-font 		= 3
+ramp-foreground 	= ${colors.background}
+ramp-background 	= ${colors.green}
+
+[module/i3]
+type 			= internal/i3
+pin-workspaces 		= false
+index-sort 		= true
+
+strip-wsnumbers 	= true
+enable-click 		= true
+enable-scroll 		= false
+
+ws-icon-0 		= 1;
+ws-icon-1 		= 2;
+ws-icon-2 		= 3;
+ws-icon-3 		= 4;
+ws-icon-4 		= 5;
+ws-icon-5 		= 6;
+ws-icon-6 		= 7;
+ws-icon-7 		= 8;
+ws-icon-8 		= 9;
+ws-icon-9 		= 10;
+
+label-focused 		= %icon%
+label-unfocused 	= %icon%
+label-urgent 		= %icon%
+label-visible 		= %icon%
+label-focused-padding 	= 3
+label-unfocused-padding = 3
+label-visible-padding 	= 3
+ 
+label-unfocused-foreground = #444444
+label-focused-foreground = #aaff77
+label-urgent-foreground = #ff5555
+
+; vim:ft=dosini
