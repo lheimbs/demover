@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# Move desktop-environment from main computer onto fresh installed distro
+
+echo "=================================================="
+echo "==========  Desktop Environment Mover  ==========="
+echo "=================================================="
+echo
+echo "List of packages to be installed can be found under ${0}/packages"
