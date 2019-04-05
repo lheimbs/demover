@@ -44,6 +44,9 @@ fi
 title
 
 # parse options
+
+# [TODO] check if files/folders exist
+
 while getopts vp:c:l OPTION; do
     case ${OPTION} in
         v)
@@ -73,5 +76,22 @@ if [[ "${#}" -gt 0 ]]; then
     exit 2
 fi
 
-# Get packagemanager
-
+# Get distribution
+if [[ -f /etc/os-release ]]; then
+    . /etc/os-release
+    OS=$NAME
+elif type lsb_release >/dev/null 2>&1; then
+    OS=$(lsb_release -si)
+elif [[ -f /etc/lsb-release ]]; then
+    . /etc/lsb-release
+    OS=$DISTRIB_ID
+elif [[ -f /etc/debian_version ]]; then
+    OS=DEBIAN
+elif [[ -f /etc/SuSe-release ]]; then
+    OS=older_SuSe
+elif [[ -f /etc/redhat-release ]]; then
+    OS=older_redhat
+else
+    # Fallback to uname
+    OS=$(usname -s)
+fi
