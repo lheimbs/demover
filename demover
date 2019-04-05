@@ -80,18 +80,25 @@ fi
 if [[ -f /etc/os-release ]]; then
     . /etc/os-release
     OS=$NAME
+    vlog "/etc/os-release exists, Os is ${OS}"
 elif type lsb_release >/dev/null 2>&1; then
     OS=$(lsb_release -si)
+    vlog "lsb_release, Os is ${OS}"
 elif [[ -f /etc/lsb-release ]]; then
     . /etc/lsb-release
     OS=$DISTRIB_ID
+    vlog "/etc/lsb-release exists, Os is ${OS}"
 elif [[ -f /etc/debian_version ]]; then
     OS=DEBIAN
+    vlog "/etc/debian-version exists, Os is ${OS}"
 elif [[ -f /etc/SuSe-release ]]; then
     OS=older_SuSe
+    vlog "/etc/SuSe-release exists, Os is ${OS}"
 elif [[ -f /etc/redhat-release ]]; then
     OS=older_redhat
+    vlog "/etc/redhat-release exists, Os is ${OS}"
 else
     # Fallback to uname
-    OS=$(usname -s)
+    OS=$(uname -s)
+    vlog "uname -s used, Os is ${OS}"
 fi
