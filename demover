@@ -41,10 +41,7 @@ if [[ ${UID} -ne 0 ]]; then
     exit 1
 fi
 
-title
-
 # parse options
-
 # [TODO] check if files/folders exist
 
 while getopts vp:c:l OPTION; do
@@ -74,6 +71,8 @@ if [[ "${#}" -gt 0 ]]; then
     vlog "${@} is no valid option."
     usage
     exit 2
+else
+    title
 fi
 
 # Get distribution
