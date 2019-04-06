@@ -39,6 +39,19 @@ vlog() {
     fi
 }
 
+echo_status() {
+    vlog "Verbose mode is on."
+
+    echo "Packagemanager: ${PKGMGR}."
+    echo "Package Install Command: ${PKGINSTALL}."
+    if [[ ${BUILDFROMSOURCE} != "" ]]; then
+        echo "Build from source command: ${BUILDFROMSOURCE}."
+    fi
+    echo "Packages file: ${PACKAGES}."
+    echo "Configs folder: ${CONFIGS}."
+    echo "Links for additional GIT/AUR Packages: ${LINKS}."
+}
+
 # Get pkgmgr-cmd and pkmgr builf from source if availabe
 read-pkgmgr-file() {
     if [[ -f "pkgmgrs/${PKGMGR}" ]]; then
@@ -79,27 +92,24 @@ while getopts vp:c:l OPTION; do
             VERBOSE='true'
             ;;
         p)
-            PACKAGES=${OPTARG} 
             if [[ -c ${PACKAGES} ]]; then
-                vlog "packages set to ${PACKAGES}"
+                PACKAGES=${OPTARG} 
             else
                 echo "${OPTARG} is not a valid file." >&2
                 exit 3
             fi
             ;;
         c)
-            CONFIGS=${OPTARG} 
             if [[ -d ${CONFIGS} ]]; then
-                vlog "config folder is set to ${CONFIGS}"
+                CONFIGS=${OPTARG} 
             else
                 echo "${OPTARG} is not a valid folder." >&2
                 exit 4
             fi
             ;;
         l)
-            LINKS=${OPTARG} 
             if [[ -c ${LINKS} ]]; then
-                vlog "links set to ${LINKS}"
+                LINKS=${OPTARG} 
             else
                 echo "${OPTARG} is not a valid file." >&2
                 exit 3
@@ -113,16 +123,13 @@ shift "$(( OPTIND - 1 ))"
 if [[ "${#}" -ne 1 ]]; then
     usage
     exit 2
-else
-    PKGMGR=${@}
-    title
-    vlog "Packagemanager is set to ${PKGMGR}."
 fi
 
-# Log verbosity
-vlog 'Verbose mode on.'
+PKGMGR=${@}
 
 # get pkginstall and buildfromsource commands
 read-pkgmgr-file
+
+echo_status
 
 
