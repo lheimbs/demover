@@ -1,5 +1,2 @@
-<? xml version="1.0" ?>
-<zypper>
-    <pkg-install>zypper install</pkg-install>
-    <build-from-source>zypper source-install</build-from-source>
-</zypper>
+pkg-install:zypper install
+build-from-source:zypper source-install

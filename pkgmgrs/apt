@@ -1,5 +1,2 @@
-<?xml version="1.0" ?>
-<apt>
-    <pkg-install>apt-get install</pkg-install>
-    <build-from-source>apt-get source --compile</build-from-source>
-</apt>
+pkg-install:apt-get install
+build-from-source:apt-get source --compile

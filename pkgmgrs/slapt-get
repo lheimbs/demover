@@ -1,4 +1,1 @@
-<? xml version="1.0" ?>
-<slapt-get>
-    <pkg-install>slapt-get --install</pkg-install>
-</slapt-get>
+pkg-install:slapt-get --install

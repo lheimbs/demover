@@ -4,6 +4,8 @@
 
 # VARIABLES
 PKGMGR=""
+PKGINSTALL=""
+BUILDFROMSOURCE=""
 PACKAGES="/packages"
 CONFIGS="/configs/"
 LINKS="/links"
@@ -37,6 +39,31 @@ vlog() {
     fi
 }
 
+# Get pkgmgr-cmd and pkmgr builf from source if availabe
+read-pkgmgr-file() {
+    if [[ -f "pkgmgrs/${PKGMGR}" ]]; then
+        vlog "Reading from file 'pkgmgrs/${PKGMGR}'"
+        while IFS= read -r LINE; do
+            IFS=':' read -ra PART <<< "$LINE"
+            vlog "${PART[0]}: ${PART[1]}"
+            if [[ ${PART[0]} = "pkg-install" ]]; then
+                PKGINSTALL="${PART[1]}"
+            elif [[ ${PART[0]} = "build-from-source" ]]; then
+                BUILDFROMSOURCE="${PART[1]}"
+            fi
+        done < "pkgmgrs/${PKGMGR}"
+    else
+        vlog "File 'pkgmgrs/${PKGMGR}' invalid."
+    fi
+}
+
+
+
+
+# ==================================================================
+# ==============  SCRIPT START =====================================
+# ==================================================================
+
 # user needs rot access to run; exitcode 1 = no root
 if [[ ${UID} -ne 0 ]]; then
     echo "You need root privileges to run this script!"
@@ -46,7 +73,6 @@ fi
 # parse options
 # EXITSTATUS 3: file is not a valid textfile
 # EXITSTATUS 4: folder is not valid
-
 while getopts vp:c:l OPTION; do
     case ${OPTION} in
         v)
@@ -95,5 +121,8 @@ fi
 
 # Log verbosity
 vlog 'Verbose mode on.'
+
+# get pkginstall and buildfromsource commands
+read-pkgmgr-file
 
 

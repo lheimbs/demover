@@ -1,4 +1,1 @@
-<? xml version="1.0" ?>
-<nix>
-    <pkg-install>nix-env -i</pkg-install>
-</nix>
+pkg-install:nix-env -i

@@ -1,4 +1,1 @@
-<? xml version="1.0" ?>
-<entropy>
-    <pkg-install>equo install</pkg-install>
-</entropy>
+pkg-install:equo install
