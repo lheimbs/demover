@@ -11,8 +11,9 @@ LINKS="/links"
 usage() {
     echo "Script to move a given desktop-configuration to a newly installed distro." >&2
     echo >&2
-    echo "Usage: ${0} [Arguments]       install desktopenvironment" >&2
+    echo "Usage: ${0} [Arguments] PKGMGR       install desktopenvironment" >&2
     echo "With no arguments given: Read packages from $(dirname '${0}')/packages, configs from $(dirname '${0}')/configs/ and links from $(dirname '${0}')/links." >&2
+    echo "PKGMGR is the packagemanager thats used on the distro." >&2
     echo >&2
     echo "Arguments:" >&2
     echo "      -p FILE     Specify a file that contains the packages that are to be installed." >&2
@@ -67,37 +68,13 @@ done
 
 # Remove the options, if too many options EXITCODE 2 = to many options
 shift "$(( OPTIND - 1 ))"
-if [[ "${#}" -gt 0 ]]; then
+if [[ "${#}" -ne 1 ]]; then
     vlog "${@} is no valid option."
     usage
     exit 2
 else
+    PKGMGR=${@}
     title
+    vlog "Packagemanager is set to ${PKGMGR}."
 fi
 
-# Get distribution
-if [[ -f /etc/os-release ]]; then
-    . /etc/os-release
-    OS=$NAME
-    vlog "/etc/os-release exists, Os is ${OS}"
-elif type lsb_release >/dev/null 2>&1; then
-    OS=$(lsb_release -si)
-    vlog "lsb_release, Os is ${OS}"
-elif [[ -f /etc/lsb-release ]]; then
-    . /etc/lsb-release
-    OS=$DISTRIB_ID
-    vlog "/etc/lsb-release exists, Os is ${OS}"
-elif [[ -f /etc/debian_version ]]; then
-    OS=DEBIAN
-    vlog "/etc/debian-version exists, Os is ${OS}"
-elif [[ -f /etc/SuSe-release ]]; then
-    OS=older_SuSe
-    vlog "/etc/SuSe-release exists, Os is ${OS}"
-elif [[ -f /etc/redhat-release ]]; then
-    OS=older_redhat
-    vlog "/etc/redhat-release exists, Os is ${OS}"
-else
-    # Fallback to uname
-    OS=$(uname -s)
-    vlog "uname -s used, Os is ${OS}"
-fi
