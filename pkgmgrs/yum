@@ -1,0 +1,4 @@
+<? xml version="1.0" ?>
+<yum>
+    <pkg-install>yum install</pkg-install>
+</yum>

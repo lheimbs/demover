@@ -1,0 +1,4 @@
+<? xml version="1.0" ?>
+<smart>
+    <pkg-install>smart install</pkg-install>
+</smart>

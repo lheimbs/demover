@@ -1,0 +1,4 @@
+<? xml version="1.0" ?>
+<pkgtools>
+    <pkg-install>installpkg</pkg-install>
+</pkgtools>

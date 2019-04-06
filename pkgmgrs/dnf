@@ -1,0 +1,4 @@
+<? xml version="1.0" ?>
+<dnf>
+    <pkg-install>dnf install</pkg-install>
+</dnf>

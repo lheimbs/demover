@@ -1,0 +1,4 @@
+<? xml version="1.0" ?>
+<netpkg>
+    <pkg-install>netpkg</pkg-install>
+</netpkg>

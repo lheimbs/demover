@@ -3,6 +3,7 @@
 # Move desktop-environment from main computer onto fresh installed distro
 
 # VARIABLES
+PKGMGR=""
 PACKAGES="/packages"
 CONFIGS="/configs/"
 LINKS="/links"
@@ -43,33 +44,47 @@ if [[ ${UID} -ne 0 ]]; then
 fi
 
 # parse options
-# [TODO] check if files/folders exist
+# EXITSTATUS 3: file is not a valid textfile
+# EXITSTATUS 4: folder is not valid
 
 while getopts vp:c:l OPTION; do
     case ${OPTION} in
         v)
             VERBOSE='true'
-            vlog 'Verbose mode on.'
             ;;
         p)
             PACKAGES=${OPTARG} 
-            vlog "packages set to ${PACKAGES}"
+            if [[ -c ${PACKAGES} ]]; then
+                vlog "packages set to ${PACKAGES}"
+            else
+                echo "${OPTARG} is not a valid file." >&2
+                exit 3
+            fi
             ;;
         c)
             CONFIGS=${OPTARG} 
-            vlog "configs set to ${CONFIGS}"
+            if [[ -d ${CONFIGS} ]]; then
+                vlog "config folder is set to ${CONFIGS}"
+            else
+                echo "${OPTARG} is not a valid folder." >&2
+                exit 4
+            fi
             ;;
         l)
             LINKS=${OPTARG} 
-            vlog "links set to ${LINKS}"
+            if [[ -c ${LINKS} ]]; then
+                vlog "links set to ${LINKS}"
+            else
+                echo "${OPTARG} is not a valid file." >&2
+                exit 3
+            fi
             ;;
     esac
 done
 
-# Remove the options, if too many options EXITCODE 2 = to many options
+# Remove the options, if pkgmgr argument is mussing: EXITCODE 2 = no pkgmgr supplied
 shift "$(( OPTIND - 1 ))"
 if [[ "${#}" -ne 1 ]]; then
-    vlog "${@} is no valid option."
     usage
     exit 2
 else
@@ -77,4 +92,8 @@ else
     title
     vlog "Packagemanager is set to ${PKGMGR}."
 fi
+
+# Log verbosity
+vlog 'Verbose mode on.'
+
 

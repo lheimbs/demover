@@ -1,0 +1,4 @@
+<? xml version="1.0" ?>
+<urpmi>
+    <pkg-install>urpmi</pkg-install>
+</urpmi>

@@ -1,0 +1,4 @@
+<? xml version="1.0" ?>
+<pkgcon>
+    <pkg-install>pkgcon install</pkg-install>
+</pkgcon>
