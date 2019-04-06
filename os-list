@@ -1,0 +1,6 @@
+Ubuntu:apt-get
+Debian:apt-get
+Arch Linux:pacman
+Manjaro Linux:pacman
+CentOS:yum
+Fedora:dnf
