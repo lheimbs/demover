@@ -132,3 +132,6 @@ read-pkgmgr-file
 echo_status
 
 # read packages file
+while IFS= read -r PKG; do
+    ${PKGINSTALL} ${PKG}
+done < ${PACKAGES}
