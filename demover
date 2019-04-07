@@ -42,14 +42,14 @@ vlog() {
 echo_status() {
     vlog "Verbose mode is on."
 
-    echo "Packagemanager: ${PKGMGR}."
-    echo "Package Install Command: ${PKGINSTALL}."
+    vlog "Packagemanager: ${PKGMGR}."
+    vlog "Package Install Command: ${PKGINSTALL}."
     if [[ ${BUILDFROMSOURCE} != "" ]]; then
-        echo "Build from source command: ${BUILDFROMSOURCE}."
+        vlog "Build from source command: ${BUILDFROMSOURCE}."
     fi
-    echo "Packages file: ${PACKAGES}."
-    echo "Configs folder: ${CONFIGS}."
-    echo "Links for additional GIT/AUR Packages: ${LINKS}."
+    vlog "Packages file: ${PACKAGES}."
+    vlog "Configs folder: ${CONFIGS}."
+    vlog "Links for additional GIT/AUR Packages: ${LINKS}."
 }
 
 # Get pkgmgr-cmd and pkmgr builf from source if availabe
@@ -129,7 +129,6 @@ PKGMGR=${@}
 
 # get pkginstall and buildfromsource commands
 read-pkgmgr-file
-
 echo_status
 
-
+# read packages file
