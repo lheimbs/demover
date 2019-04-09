@@ -92,7 +92,7 @@ while getopts vp:c:l OPTION; do
             VERBOSE='true'
             ;;
         p)
-            if [[ -c ${PACKAGES} ]]; then
+            if [[ -c ${OPTARG} ]]; then
                 PACKAGES=${OPTARG} 
             else
                 echo "${OPTARG} is not a valid file." >&2
@@ -100,7 +100,7 @@ while getopts vp:c:l OPTION; do
             fi
             ;;
         c)
-            if [[ -d ${CONFIGS} ]]; then
+            if [[ -d ${OPTARG} ]]; then
                 CONFIGS=${OPTARG} 
             else
                 echo "${OPTARG} is not a valid folder." >&2
@@ -108,7 +108,7 @@ while getopts vp:c:l OPTION; do
             fi
             ;;
         l)
-            if [[ -c ${LINKS} ]]; then
+            if [[ -c ${OPTARG} ]]; then
                 LINKS=${OPTARG} 
             else
                 echo "${OPTARG} is not a valid file." >&2
@@ -133,5 +133,9 @@ echo_status
 
 # read packages file
 while IFS= read -r PKG; do
-    ${PKGINSTALL} ${PKG}
+    IFS=':' read -ra PKGPART <<< "$PKG"
+    INSTALL=( ${PKGINSTALL} ${PKGPART[0]})
+    echo ${INSTALL}
+    #${PKGINSTALL} ${PKG}
+
 done < ${PACKAGES}
