@@ -6,9 +6,9 @@
 PKGMGR=""
 PKGINSTALL=""
 BUILDFROMSOURCE=""
-PACKAGES="/packages"
-CONFIGS="/configs/"
-LINKS="/links"
+PACKAGES="packages"
+CONFIGS="configs/"
+LINKS="links"
 
 # functions:
 usage() {
@@ -92,7 +92,7 @@ while getopts vp:c:l OPTION; do
             VERBOSE='true'
             ;;
         p)
-            if [[ -c ${OPTARG} ]]; then
+            if [[ -f ${OPTARG} ]]; then
                 PACKAGES=${OPTARG} 
             else
                 echo "${OPTARG} is not a valid file." >&2
@@ -108,7 +108,7 @@ while getopts vp:c:l OPTION; do
             fi
             ;;
         l)
-            if [[ -c ${OPTARG} ]]; then
+            if [[ -f ${OPTARG} ]]; then
                 LINKS=${OPTARG} 
             else
                 echo "${OPTARG} is not a valid file." >&2
@@ -133,9 +133,9 @@ echo_status
 
 # read packages file
 while IFS= read -r PKG; do
-    IFS=':' read -ra PKGPART <<< "$PKG"
-    INSTALL=( ${PKGINSTALL} ${PKGPART[0]})
+    IFS=': ' read -ra PKGPART <<< "$PKG"
+    INSTALL="${PKGINSTALL} ${PKGPART[0]}"
     echo ${INSTALL}
-    #${PKGINSTALL} ${PKG}
+    #$INSTALL
 
 done < ${PACKAGES}
