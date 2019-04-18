@@ -1,1 +1,2 @@
 pkg-install:dnf install
+update:dnf update

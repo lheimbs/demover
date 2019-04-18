@@ -6,6 +6,7 @@
 PKGMGR=""
 PKGINSTALL=""
 BUILDFROMSOURCE=""
+PKGMGR_UPDATE=""
 PACKAGES="packages"
 CONFIGS="configs/"
 LINKS="links"
@@ -63,6 +64,8 @@ read-pkgmgr-file() {
                 PKGINSTALL="${PART[1]}"
             elif [[ ${PART[0]} = "build-from-source" ]]; then
                 BUILDFROMSOURCE="${PART[1]}"
+            elif [[ ${PART[0]} = "update" ]]; then
+                PKGMGR_UPDATE="${PART[1]}"
             fi
         done < "pkgmgrs/${PKGMGR}"
     else
@@ -131,7 +134,8 @@ PKGMGR=${@}
 read-pkgmgr-file
 echo_status
 
-# read packages file
+# read packages file and install packages:w
+apt-get update
 while IFS= read -r PKG; do
     IFS=': ' read -ra PKGPART <<< "$PKG"
     INSTALL="${PKGINSTALL} ${PKGPART[0]}"
