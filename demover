@@ -10,6 +10,7 @@ PKGMGR_UPDATE=""
 PACKAGES="packages"
 CONFIGS="configs/"
 LINKS="links"
+VERBOSE=""
 
 # functions:
 usage() {
@@ -24,6 +25,18 @@ usage() {
     echo "      -c FOLDER   Specify a folder to look for config files." >&2
     echo "      -l FILE     Specify a file that contains links to packages from AUR/GIT." >&2
     echo "      -v          Increase verbosity." >&2
+}
+
+confirm_selection() {
+    read -r -p "Are you sure? [y/N] " response
+    case "$response" in 
+        [yY][eE][sS]|[yY])
+            return 1
+            ;;
+        *)
+            return 0
+            ;;
+    esac
 }
 
 title () {
@@ -134,12 +147,26 @@ PKGMGR=${@}
 read-pkgmgr-file
 echo_status
 
-# read packages file and install packages:w
-apt-get update
+# update package list
+if [[ ${PKGMGR_UPDATE} != "" ]]; then
+    echo "Updating Package list."
+#    if [[ ${VERBOSE} == 'true' ]]; then
+#        ${PKGMGR_UPDATE}
+#    else
+#        ${PKGMGR_UPDATE} > /dev/null
+#    fi
+fi
+
+# read packages file and install packages:
 while IFS= read -r PKG; do
     IFS=': ' read -ra PKGPART <<< "$PKG"
     INSTALL="${PKGINSTALL} ${PKGPART[0]}"
-    echo ${INSTALL}
-    #$INSTALL
-
+    echo "Proposing to run '${INSTALL}'."
+    #confirm_selection "Execute command?" || echo "No" 
+    if [[ ${VERBOSE} = 'true' ]]; then
+        #vlog "Proposing to run \''${INSTALL}'\'."
+        $INSTALL
+    else
+        $INSTALL > /dev/null
+    fi
 done < ${PACKAGES}
