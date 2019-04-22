@@ -157,16 +157,36 @@ if [[ ${PKGMGR_UPDATE} != "" ]]; then
 #    fi
 fi
 
-# read packages file and install packages:
-while IFS= read -r PKG; do
-    IFS=': ' read -ra PKGPART <<< "$PKG"
+IFS=$'\r\n :'
+GLOBIGNORE='*'
+command eval 'PACKAGES_LIST=($(cat ${PACKAGES}))'
+
+echo "${PACKAGES_LIST[@]}"
+
+# iterate over array
+for PKGPART in "${PACKAGES_LIST[@]}"; do
     INSTALL="${PKGINSTALL} ${PKGPART[0]}"
     echo "Proposing to run '${INSTALL}'."
-    #confirm_selection "Execute command?" || echo "No" 
+    confirm_selection "Execute command?" || echo "No" 
     if [[ ${VERBOSE} = 'true' ]]; then
         #vlog "Proposing to run \''${INSTALL}'\'."
-        $INSTALL
+        yes | $INSTALL
     else
-        $INSTALL > /dev/null
+        yes | $INSTALL > /dev/null
     fi
-done < ${PACKAGES}
+done
+
+
+#while IFS= read -r PKG; do
+#    IFS=': ' read -ra PKGPART <<< "$PKG"
+#    INSTALL="${PKGINSTALL} ${PKGPART[0]}"
+#    echo "Proposing to run '${INSTALL}'."
+#    sleep 5 
+#    #confirm_selection "Execute command?" || echo "No" 
+#    if [[ ${VERBOSE} = 'true' ]]; then
+        #vlog "Proposing to run \''${INSTALL}'\'."
+#        yes | $INSTALL
+#    else
+#        yes | $INSTALL > /dev/null
+#    fi
+#done < ${PACKAGES}
