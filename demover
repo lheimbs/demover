@@ -67,7 +67,7 @@ echo_status() {
 }
 
 # Get pkgmgr-cmd and pkmgr builf from source if availabe
-read-pkgmgr-file() {
+read_pkgmgr_file() {
     if [[ -f "pkgmgrs/${PKGMGR}" ]]; then
         vlog "Reading from file 'pkgmgrs/${PKGMGR}'"
         while IFS= read -r LINE; do
@@ -82,8 +82,9 @@ read-pkgmgr-file() {
             fi
         done < "pkgmgrs/${PKGMGR}"
     else
-        vlog "File 'pkgmgrs/${PKGMGR}' invalid."
+        return 1
     fi
+    return 0
 }
 
 
@@ -144,7 +145,12 @@ fi
 PKGMGR=${@}
 
 # get pkginstall and buildfromsource commands
-read-pkgmgr-file
+# if read_pkgmgr_file return is != 0: EXITCODE 3 = supplied pkgmgr invalid
+read_pkgmgr_file
+if [[ "${?}" -ne 0 ]]; then
+    echo "File 'pkgmgrs/${PKGMGR}' invalid."
+    exit 3
+fi
 echo_status
 
 # update package list
