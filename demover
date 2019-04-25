@@ -87,7 +87,12 @@ read_pkgmgr_file() {
     return 0
 }
 
-
+# React to exitcodes of executed commands
+check_exitcode() {
+    if [[ "${?}" -ne 0 ]]; then
+        # handle exitcode
+    fi
+}
 
 
 # ==================================================================
@@ -162,7 +167,6 @@ if [[ ${PKGMGR_UPDATE} != "" ]]; then
         ${PKGMGR_UPDATE} > /dev/null
     fi
 fi
-
 
 IFS=$'\r\n :'
 GLOBIGNORE='*'
