@@ -91,6 +91,7 @@ read_pkgmgr_file() {
 check_exitcode() {
     if [[ "${?}" -ne 0 ]]; then
         # handle exitcode
+        echo "Command failed."
     fi
 }
 
