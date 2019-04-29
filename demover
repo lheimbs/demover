@@ -95,8 +95,6 @@ exec_cmd() {
     set -o pipefail
     exec {fd}>&2
 
-    echo "${cmd} |& tee /dev/fd/$fd | ( ! grep -q -e '^Err:' -e '^[WE]:' )"
-
     local eval_cmd_verbose=" |& tee /dev/fd/$fd | ( ! grep -q -e '^Err:' -e '^[WE]:' )"
     local eval_cmd=" |& ( ! grep -q -e '^Err:' -e '^[WE]:' )"
 
@@ -106,10 +104,11 @@ exec_cmd() {
         cmd+=$eval_cmd
     fi
 
+    echo "${cmd}"
+
     eval $cmd
 
     local result=$?
-    vlog "result: $result"
 
     exec {fd}>&-
     if [[ "${result}" -ne 0 ]]; then
