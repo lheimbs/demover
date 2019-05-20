@@ -88,7 +88,7 @@ read_pkgmgr_file() {
 }
 
 # React to exitcodes of executed commands
-exec_cmd() {
+exec_cmd_with_errorcheck() {
     local cmd="${@}"
     vlog "cmd: ${cmd}"
 
@@ -184,7 +184,7 @@ echo_status
 # update package list
 if [[ ${PKGMGR_UPDATE} != "" ]]; then
     echo "Updating Package list."
-    exec_cmd ${PKGMGR_UPDATE}
+    exec_cmd_with_errorcheck ${PKGMGR_UPDATE}
 fi
 
 IFS=$'\r\n :'
@@ -200,9 +200,9 @@ for PKGPART in "${PACKAGES_LIST[@]}"; do
     confirm_selection "Execute command?"
     if [[ ${?} -eq 1 ]]; then
         if [[ ${VERBOSE} = 'true' ]]; then
-            exec_cmd "${INSTALL}"
+            exec_cmd_with_errorcheck "${INSTALL}"
         else
-            exec_cmd "${INSTALL}"
+            exec_cmd_with_errorcheck  "${INSTALL}"
         fi
     else
         vlog "${PKGPART[0]} will not be installed."
