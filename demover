@@ -88,10 +88,32 @@ read_pkgmgr_file() {
 }
 
 # React to exitcodes of executed commands
-check_exitcode() {
-    if [[ "${?}" -ne 0 ]]; then
+exec_cmd() {
+    local cmd="${@}"
+    vlog "cmd: ${cmd}"
+
+    set -o pipefail
+    exec {fd}>&2
+
+    local eval_cmd_verbose=" |& tee /dev/fd/$fd | ( ! grep -q -e '^Err:' -e '^[WE]:' )"
+    local eval_cmd=" |& ( ! grep -q -e '^Err:' -e '^[WE]:' )"
+
+    if [[ ${VERBOSE} = 'true' ]]; then
+        cmd+=$eval_cmd_verbose
+    else
+        cmd+=$eval_cmd
+    fi
+
+    echo "${cmd}"
+
+    eval $cmd
+
+    local result=$?
+
+    exec {fd}>&-
+    if [[ "${result}" -ne 0 ]]; then
         # handle exitcode
-        echo "Command failed."
+        echo "Command '${cmd}' failed with exitcode $result."
     fi
 }
 
@@ -151,7 +173,7 @@ fi
 PKGMGR=${@}
 
 # get pkginstall and buildfromsource commands
-# if read_pkgmgr_file return is != 0: EXITCODE 3 = supplied pkgmgr invalid
+# if read_pkgmgr_file return is != 0: EXITCODE 5 = supplied pkgmgr invalid
 read_pkgmgr_file
 if [[ "${?}" -ne 0 ]]; then
     echo "File 'pkgmgrs/${PKGMGR}' invalid."
@@ -162,11 +184,7 @@ echo_status
 # update package list
 if [[ ${PKGMGR_UPDATE} != "" ]]; then
     echo "Updating Package list."
-    if [[ ${VERBOSE} == 'true' ]]; then
-        ${PKGMGR_UPDATE}
-    else
-        ${PKGMGR_UPDATE} > /dev/null
-    fi
+    exec_cmd ${PKGMGR_UPDATE}
 fi
 
 IFS=$'\r\n :'
@@ -177,14 +195,14 @@ echo "${PACKAGES_LIST[@]}"
 
 # iterate over array
 for PKGPART in "${PACKAGES_LIST[@]}"; do
-    INSTALL="${PKGINSTALL} ${PKGPART[0]}"
+    INSTALL="yes | ${PKGINSTALL} ${PKGPART[0]}"
     echo "Proposing to run '${INSTALL}'."
     confirm_selection "Execute command?"
     if [[ ${?} -eq 1 ]]; then
         if [[ ${VERBOSE} = 'true' ]]; then
-            yes | $INSTALL
+            exec_cmd "${INSTALL}"
         else
-            yes | $INSTALL > /dev/null
+            exec_cmd "${INSTALL}"
         fi
     else
         vlog "${PKGPART[0]} will not be installed."
