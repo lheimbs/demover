@@ -11,6 +11,8 @@ PACKAGES="packages"
 CONFIGS="configs/"
 LINKS="links"
 VERBOSE=""
+PROMPT_OPTION=""
+FAILED_PACKAGES=()
 
 # functions:
 usage() {
@@ -24,19 +26,24 @@ usage() {
     echo "      -p FILE     Specify a file that contains the packages that are to be installed." >&2
     echo "      -c FOLDER   Specify a folder to look for config files." >&2
     echo "      -l FILE     Specify a file that contains links to packages from AUR/GIT." >&2
+    echo "      -o          Confirm command before installing." >&2
     echo "      -v          Increase verbosity." >&2
 }
 
 confirm_selection() {
-    read -r -p "Are you sure? [y/N] " response
-    case "$response" in 
-        [yY][eE][sS]|[yY]|[jJ][aA])
-            return 1
-            ;;
-        *)
-            return 0
-            ;;
-    esac
+    if [[ "${PROMPT_OPTION}" = 'true' ]]; then 
+        read -r -p "Are you sure? [y/N] " response
+        case "$response" in 
+            [yY][eE][sS]|[yY]|[jJ][aA])
+                return 1
+                ;;
+            *)
+                return 0
+                ;;
+        esac
+    else
+        return 1
+    fi
 }
 
 title () {
@@ -88,7 +95,7 @@ read_pkgmgr_file() {
 }
 
 # React to exitcodes of executed commands
-exec_cmd_with_errorcheck() {
+exec_cmd_to_pipe() {
     local cmd="${@}"
     vlog "cmd: ${cmd}"
 
@@ -117,21 +124,56 @@ exec_cmd_with_errorcheck() {
     fi
 }
 
+# Execute commands but write output to log file and check that for errors
+exec_cmd_to_file() {
+    local cmd="${@}"
+    local success="false"
+    vlog "command: ${cmd}."
+    cmd+=" &> command.log"
+    eval $cmd
+
+    if grep -q -e '^Error' -e '^Err:' -e '^E:' command.log; then
+        echo "Error detected."
+        echo "Error: ${cmd}\n" >> log
+        cat command.log >> log
+        echo "" >> log
+        echo "" >> log
+    elif [[ ${?} -ne 0 ]]; then
+        echo "Error detected: Exitcode not 0."
+        echo "Error: ${cmd}\n" >> log
+        cat command.log >> log
+        echo "" >> log
+        echo "" >> log
+    elif grep -q -e '^W' -e '^Warning' -e '^Warn' command.log; then
+        vlog "Warning detected."
+        success='true'
+    else
+        vlog "Command ran successfully."
+        success='true'
+    fi
+    #rm -f command.log
+
+    if [[ ${success} = 'true' ]]; then
+        return 0
+    else
+        return 1
+    fi
+}
 
 # ==================================================================
 # ==============  SCRIPT START =====================================
 # ==================================================================
 
-# user needs rot access to run; exitcode 1 = no root
+# ----- user needs rot access to run; exitcode 1 = no root -----
 if [[ ${UID} -ne 0 ]]; then
     echo "You need root privileges to run this script!"
     exit 1
 fi
 
-# parse options
+# ----- parse options -----
 # EXITSTATUS 3: file is not a valid textfile
 # EXITSTATUS 4: folder is not valid
-while getopts vp:c:l OPTION; do
+while getopts vop:c:l OPTION; do
     case ${OPTION} in
         v)
             VERBOSE='true'
@@ -160,10 +202,13 @@ while getopts vp:c:l OPTION; do
                 exit 3
             fi
             ;;
+        o)
+            PROMPT_OPTION='true'
+            ;;
     esac
 done
 
-# Remove the options, if pkgmgr argument is mussing: EXITCODE 2 = no pkgmgr supplied
+# ----- Remove the options, if pkgmgr argument is mussing: EXITCODE 2 = no pkgmgr supplied -----
 shift "$(( OPTIND - 1 ))"
 if [[ "${#}" -ne 1 ]]; then
     usage
@@ -172,7 +217,7 @@ fi
 
 PKGMGR=${@}
 
-# get pkginstall and buildfromsource commands
+# ----- get pkginstall and buildfromsource commands -----
 # if read_pkgmgr_file return is != 0: EXITCODE 5 = supplied pkgmgr invalid
 read_pkgmgr_file
 if [[ "${?}" -ne 0 ]]; then
@@ -181,30 +226,31 @@ if [[ "${?}" -ne 0 ]]; then
 fi
 echo_status
 
-# update package list
+# ----- Update package list -----
 if [[ ${PKGMGR_UPDATE} != "" ]]; then
     echo "Updating Package list."
-    exec_cmd_with_errorcheck ${PKGMGR_UPDATE}
+    exec_cmd_to_file ${PKGMGR_UPDATE}
 fi
 
 IFS=$'\r\n :'
 GLOBIGNORE='*'
 command eval 'PACKAGES_LIST=($(cat ${PACKAGES}))'
 
-echo "${PACKAGES_LIST[@]}"
-
+# ----- Package installation section -----
 # iterate over array
 for PKGPART in "${PACKAGES_LIST[@]}"; do
     INSTALL="yes | ${PKGINSTALL} ${PKGPART[0]}"
     echo "Proposing to run '${INSTALL}'."
     confirm_selection "Execute command?"
     if [[ ${?} -eq 1 ]]; then
-        if [[ ${VERBOSE} = 'true' ]]; then
-            exec_cmd_with_errorcheck "${INSTALL}"
-        else
-            exec_cmd_with_errorcheck  "${INSTALL}"
+        exec_cmd_to_file "${INSTALL}"
+        if [[ $? -ne 0 ]]; then
+            FAILED_PACKAGES+=(${PKGPART[0]})
         fi
     else
         vlog "${PKGPART[0]} will not be installed."
     fi
 done
+
+vlog "The following packages could not be installed:"
+vlog "${FAILED_PACKAGES[@]}"
