@@ -1,0 +1,85 @@
+! ----- Defines ----- #
+#define hack                Hack
+#define hacknerdmono        Hack Nerd Font Mono:style=Regular
+#define hacknerd            Hack Nerd Font
+#define sauce               SauceCodePro Nerd Font
+#define isoveka             Iosevka Term 
+#define sfns                SFNS Display
+
+#define font1               InconsolataGo\ Nerd\ Font\ Mono
+
+! ----- Xres general ----- #
+Xft.dpi:                    96
+Xft.antialias:              true
+Xft.hinting:                true
+Xft.rgba:                   rgb
+Xft.autohint:               false
+Xft.hintstyle:              hintslight
+Xft.lcdfilter:              lcddefault
+
+Xcursor.theme:              xcursor-breeze
+Xcursor.size:               0
+
+XTerm*background:           #222D31
+XTerm*foreground:           #d8d8d8
+Term*pointerColor:          #1ABB9B
+Term*faceName:              Fixed
+Term*faceSize:              11
+Term*reverseVideo:          on
+Term*selectToClipboard:     true
+
+
+! ----- Rofi Config ----- #
+rofi.color-window:          argb:cc111111, argb:cc111111, argb:cc111111
+rofi.color-normal:          argb:cc111111, #aaff77, argb:cc111111, argb:77aaff77, argb:cc111111
+rofi.color-urgent:          argb:cc111111, #aaff77, argb:cc111111, argb:cc111111, #aaff77
+rofi.color-active:          argb:2c1d1f21, #aaff88, argb:e44b5160, #4491ed, #f9f9f9
+rofi.width:                 100
+rofi.lines:                 3
+rofi.columns:               1
+rofi.font:                  System San Francisco Display 16
+rofi.bw:                    0
+rofi.padding:               800
+rofi.eh:                    2
+rofi.separator-style:       dotted
+rofi.hide-scrollbar:        true
+
+*background:                #222D31
+*foreground:                #d8d8d8
+*fading:                    8
+*fadeColor:                 black
+*cursorColor:               #1ABB9B
+*pointerColorBackground:    #2B2C2B
+*pointerColorForeground:    #16A085
+
+!! black dark/light
+!*color0:                    #222D31
+!*color8:                    #585858
+
+!! red dark/light
+!*color1:                    #ab4642
+!*color9:                    #ab4642
+
+!! green dark/light
+!*color2:                    #7E807E
+!*color10:                   #8D8F8D
+
+!! yellow dark/light
+!*color3:                    #f7ca88
+!*color11:                   #f7ca88
+
+!! blue dark/light
+!*color4:                    #7cafc2
+!*color12:                   #7cafc2
+
+!! magenta dark/light
+!*color5:                    #ba8baf
+!*color13:                   #ba8baf
+
+!! cyan dark/light
+!*color6:                          #1ABB9B
+!*color14:                         #1ABB9B
+
+!! white dark/light
+!*color7:                          #d8d8d8
+!*color15:                         #f8f8f8
