@@ -14,6 +14,9 @@ VERBOSE=""
 PROMPT_OPTION=""
 FAILED_PACKAGES=()
 
+# create new log file
+echo "" > log
+
 # functions:
 usage() {
     echo "Script to move a given desktop-configuration to a newly installed distro." >&2
@@ -131,21 +134,26 @@ exec_cmd_to_file() {
     vlog "command: ${cmd}."
     cmd+=" &> command.log"
     eval $cmd
+    retVal=${?}
 
     if grep -q -e '^Error' -e '^Err:' -e '^E:' command.log; then
         echo "Error detected."
-        echo "Error: ${cmd}\n" >> log
+        echo "Error: ${cmd}" >> log
         cat command.log >> log
         echo "" >> log
         echo "" >> log
-    elif [[ ${?} -ne 0 ]]; then
-        echo "Error detected: Exitcode not 0."
-        echo "Error: ${cmd}\n" >> log
+    elif [[ ${retVal} -ne 0 ]]; then
+        echo "Error detected: Exitcode: ${retVal}."
+        echo "Error: ${cmd}" >> log
         cat command.log >> log
         echo "" >> log
         echo "" >> log
     elif grep -q -e '^W' -e '^Warning' -e '^Warn' command.log; then
         vlog "Warning detected."
+        echo "Warning detected." >> log
+        cat command.log >> log
+        echo "" >> log
+        echo "" >> log
         success='true'
     else
         vlog "Command ran successfully."
