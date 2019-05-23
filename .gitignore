@@ -2,3 +2,4 @@ Vagrantfile
 .vagrant/
 command.log*
 log
+*.orig

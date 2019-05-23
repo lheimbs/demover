@@ -131,10 +131,23 @@ exec_cmd_to_pipe() {
 exec_cmd_to_file() {
     local cmd="${@}"
     local success="false"
-    vlog "command: ${cmd}."
+    #local delay='0.75'
+    #local spinstr='\|/-'
+    #local temp
+
     cmd+=" &> command.log"
+    
+    #while eval $cmd; do
+    #    temp="${spinstr#?}"
+    #    printf " [%c]  " "${spinstr}"
+    #    spinstr=${temp}${spinstr%"${temp}"}
+    #    sleep "${delay}"
+    #    printf "\b\b\b\b\b\b"
+    #done
+    
     eval $cmd
-    retVal=${?}
+    retVal=${?} 
+    #printf "    \b\b\b\b"
 
     if grep -q -e '^Error' -e '^Err:' -e '^E:' command.log; then
         echo "Error detected."
@@ -159,7 +172,8 @@ exec_cmd_to_file() {
         vlog "Command ran successfully."
         success='true'
     fi
-    #rm -f command.log
+    
+    rm -f command.log
 
     if [[ ${success} = 'true' ]]; then
         return 0
@@ -260,5 +274,7 @@ for PKGPART in "${PACKAGES_LIST[@]}"; do
     fi
 done
 
-vlog "The following packages could not be installed:"
-vlog "${FAILED_PACKAGES[@]}"
+if [[ ${#FAILED_PACKAGES[@]} -ne 0 ]]; then
+    echo "${#FAILED_PACKAGES[@]} packages could not be installed:"
+    echo "${FAILED_PACKAGES[@]}"
+fi
