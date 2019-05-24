@@ -28,7 +28,7 @@ usage() {
     echo "Arguments:" >&2
     echo "      -p FILE     Specify a file that contains the packages that are to be installed." >&2
     echo "      -c FOLDER   Specify a folder to look for config files." >&2
-    echo "      -l FILE     Specify a file that contains links to packages from AUR/GIT." >&2
+    echo "      -l FILE     Specify a file that contains links to packages from AUR or how the package ist built from source." >&2
     echo "      -o          Confirm command before installing." >&2
     echo "      -v          Increase verbosity." >&2
 }
